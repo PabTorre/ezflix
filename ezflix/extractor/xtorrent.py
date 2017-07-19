@@ -25,17 +25,20 @@ class XTorrent(object):
             self.category = Category.MUSIC
 
     def get_magnet(self, torrent_id):
+        #%%
         for torrent in self.torrents:
             if torrent['id'] == torrent_id:
                 url = self.base + torrent['href']
                 soup = self._call(url)
                 title = soup.find('div', {'class', 'box-info-heading'})
                 title = title.find('h1')
-                rows = soup.find('ul', {'class': 'download-links'})
-                magnet = rows.find('a', {'class': 'btn-magnet'})
+                rows = soup.find('ul', {'class': "download-links-dontblock btn-wrap-list"})
+                #%%
+                magnet = rows.find('a', {'class': 'btn'})
                 magnet = [title.text.strip(), magnet['href'].strip()]
+                #%%
                 return magnet
-
+        #%%
         return False
 
     def get_torrents(self):
