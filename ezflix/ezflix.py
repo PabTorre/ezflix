@@ -28,7 +28,9 @@ def parser():
     p = argparse.ArgumentParser()
     p.add_argument('media_type', choices=['movie', 'tv', 'music'])
     p.add_argument('query')
+    p.add_argument('source', nargs='?',default='0')
     p.add_argument('latest', nargs='?', default='0')
+    
     return p.parse_args()
 
 
@@ -47,6 +49,7 @@ def main(q=None, media_type=None):
     args = parser()
     query = args.query if q is None else q
     media_type = args.media_type if media_type is None else media_type
+    source = args.source 
     media_player = 'mpv'
     need_magnet = False
     found = False
@@ -54,15 +57,20 @@ def main(q=None, media_type=None):
     xt = []
     #
     try:
+        
+        assert source == '0'
         xt = XTorrent(quote_plus(query), media_type)
         torrents = xt.get_torrents()
+        print("\n\nUsing XTorrent\n\n")
         need_magnet = True
         assert len(torrents) >0   
     except:
         try: 
             if media_type == 'tv':
+                print("\n\nUsing EZTV \n\n")
                 torrents = eztv(query.replace(' ', '-').lower())
             elif media_type == 'movie':
+                print("\n\nUsing YTS \n\n")
                 torrents = yts(quote_plus(query))         
             assert len(torrents) >0    
         except:
